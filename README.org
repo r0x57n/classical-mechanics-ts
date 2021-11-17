@@ -1,0 +1,2 @@
+* Physics-JS
+A project I'm doing to test out JavaScript. In the end I hope to have bouncing balls inside of an HTML canvas.
