@@ -1,32 +1,19 @@
 import { Engine } from "./engine.js"
 import { Vector, Point } from "./linear_algebra.js"
+import { Force, MechanicalObject, GRAVITY } from "./physics.js"
 
-const GRAVITY = 9.8
-const Y_HAT = new Vector(0, 0, 0, 1)
-const X_HAT = new Vector(0, 0, 1, 0)
-
-class PhysicsObject {
-  constructor(mass) {
-    this.forces = []
-    this.forces['w'] = new Vector(0, 0, 0, 1)
-    this.mass = mass
-    this.forces['w'].scale(this.mass * (-GRAVITY))
-  }
-
-  physics(deltaTime) {
-    var yTot = 0;
-    var xTot = 0;
-
-    for (const force of this.forces) {
-      yTot += (force.proj(Y_HAT)).abs()
-      xTot += (force.proj(X_HAT)).abs()
-    }
+class Rectangle {
+  constructor(x, y, w, h) {
+    this.x = x
+    this.y = y
+    this.w = w
+    this.h = h
   }
 }
 
-class Circle extends PhysicsObject {
+class Circle extends MechanicalObject {
   constructor(radius, x, y, color) {
-    super(10)
+    super(0.5)
     this.x = x
     this.y = y
     this.radius = radius
@@ -34,27 +21,49 @@ class Circle extends PhysicsObject {
   }
 
   draw(ctx) {
-    this.drawForces(ctx)
-
     ctx.beginPath()
     ctx.strokeStyle = this.color
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
     ctx.stroke()
   }
+
+  debug() {
+    var debug = document.getElementById("debug")
+    debug.setAttribute('style', 'white-space: pre;');
+    var n = "\r\n"
+
+    var x_y = "(" + this.x + ", " + this.y + ")" + n
+    var vel = "Vel: (" + this.velocity.x + ", " + this.velocity.y + ")" + n
+    var forces = ""
+    for (const force of this.forces) {
+      forces += "Force: (" + force.x + ", " + force.y + ")" + n
+    }
+    debug.textContent = x_y + vel + forces
+  }
 }
+
+class Wall extends MechanicalObject {
+  constructor(x, y, w, h) {
+    this.rectangle = new Rectangle(x, y, w, h)
+  }
+}
+
 
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
-var testVec2 = new Vector(0, 0, 4, 1)
-testVec2.scale(9.82 * 10)
-testVec2.draw(ctx, 200, 200, 0.4)
+var circle = new Circle(20, 20, 20, "green")
+var weight = new Vector(0, 0, 0, 1)
+weight.scale(circle.mass * GRAVITY)
+circle.forces.push(weight)
 
-var xVec = testVec2.proj(X_HAT)
-xVec.draw(ctx, 200, 200, 0.4)
-var yVec = testVec2.proj(Y_HAT)
-yVec.draw(ctx, 200, 200, 0.4)
+const engine = new Engine(canvas, ctx)
+engine.add(circle)
 
-//const engine = new Engine(canvas, ctx)
-//engine.add(new Circle(20, 20, 20, "green"))
-//engine.loop()
+function addForce() {
+  circle.forces.push(new Vector(0, 0, 1, 0))
+}
+
+engine.loop()
+
+document.getElementById("btn").addEventListener("click", addForce)

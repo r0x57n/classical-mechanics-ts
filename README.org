@@ -1,2 +1,2 @@
-* physics-js
-A project I'm doing to test out JavaScript. In the end I hope to have bouncing balls inside of an HTML canvas.
+* Classical mechanics physics project
+A project I'm doing to test out JavaScript. In the end I hope to have bouncing balls inside of an HTML canvas, mostly simulated with physics for a idealized situation with point particles.

@@ -25,6 +25,11 @@ class Vector {
     this.y *= lambda
   }
 
+  scaleRet(lambda) {
+    this.scale(lambda)
+    return this
+  }
+
   /*
    * Project this vector onto vector v, return the resulting vector.
    */
@@ -50,6 +55,11 @@ class Vector {
     return Math.sqrt(this.x**2 + this.y**2)
   }
 
+  add(v) {
+    this.x += v.x
+    this.y += v.y
+  }
+
   /*
    * Draw the vector onto a canvas context.
    * Since a vector has no position in the plane, we need to know where to start the vector.
@@ -57,15 +67,28 @@ class Vector {
    * ctx    - the context to draw it on
    * x, y   - position to start the vector in the canvas
    * scale  - what scale to draw it in
+   * color  - what color to draw it in
    */
-  draw(ctx, x, y, scale=1) {
+  draw(ctx, x, y, scale=1, color="blue") {
     ctx.beginPath()
-    ctx.strokeStyle = "blue"
+    ctx.strokeStyle = color
     ctx.moveTo(x, y)
     ctx.lineTo(x + this.x * scale, y + this.y * scale)
     ctx.stroke()
+  }
 
-    /* TODO draw a arrow by projecting the vector onto x/y? */
+  rotate(phi) {
+    this.x = Math.round(this.x * Math.cos(phi) - this.y * Math.sin(phi))
+    this.y = Math.round(this.x * Math.sin(phi) + this.y * Math.cos(phi))
+  }
+
+  sign() {
+    if (this.x == 0)
+      return Math.sign(this.y)
+    else if (this.y == 0)
+      return Math.sign(this.x)
+    else
+      return Math.sign(this.y * this.x)
   }
 }
 
