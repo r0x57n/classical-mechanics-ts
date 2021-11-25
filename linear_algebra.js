@@ -60,26 +60,17 @@ class Vector {
     this.y += v.y
   }
 
-  /*
-   * Draw the vector onto a canvas context.
-   * Since a vector has no position in the plane, we need to know where to start the vector.
-   *
-   * ctx    - the context to draw it on
-   * x, y   - position to start the vector in the canvas
-   * scale  - what scale to draw it in
-   * color  - what color to draw it in
-   */
-  draw(ctx, x, y, scale=1, color="blue") {
-    ctx.beginPath()
-    ctx.strokeStyle = color
-    ctx.moveTo(x, y)
-    ctx.lineTo(x + this.x * scale, y + this.y * scale)
-    ctx.stroke()
-  }
-
   rotate(phi) {
     this.x = Math.round(this.x * Math.cos(phi) - this.y * Math.sin(phi))
     this.y = Math.round(this.x * Math.sin(phi) + this.y * Math.cos(phi))
+  }
+
+  rotateY(phi) {
+    this.y = Math.round(this.x * Math.sin(phi) + this.y * Math.cos(phi))
+  }
+
+  rotateX(phi) {
+    this.x = Math.round(this.x * Math.cos(phi) - this.y * Math.sin(phi))
   }
 
   sign() {

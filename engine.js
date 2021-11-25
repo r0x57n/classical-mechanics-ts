@@ -15,9 +15,9 @@ class Engine {
 
     for (const element of this.elements) {
       if (element.y >= this.canvas.height || element.y <= 0) {
-        element.velocity.rotate(Math.PI)
+        element.vectors.get("vel").rotateY(Math.PI)
       } else if (element.x >= this.canvas.width || element.x <= 0) {
-        element.velocity.rotate(Math.PI)
+        element.vectors.get("vel").rotateX(Math.PI)
       }
 
       element.physics(this.deltaTime, this.ctx)

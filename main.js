@@ -1,6 +1,6 @@
 import { Engine } from "./engine.js"
 import { Vector, Point } from "./linear_algebra.js"
-import { Force, MechanicalObject, GRAVITY } from "./physics.js"
+import { VecD, MechanicalObject, GRAVITY } from "./physics.js"
 
 class Rectangle {
   constructor(x, y, w, h) {
@@ -28,42 +28,41 @@ class Circle extends MechanicalObject {
   }
 
   debug() {
-    var debug = document.getElementById("debug")
-    debug.setAttribute('style', 'white-space: pre;');
-    var n = "\r\n"
+    var debug = document.getElementById("objectInfo")
+    var table = "<table>"
+    table += "<tr><th>mass</th><td>" + this.mass + "</td></tr>"
+    table += "<tr><th>pos</th><td>(" + this.x.toFixed() + ", " + this.y.toFixed() + ")</td></tr>"
+    table += "</table><br><table>"
+    table += "<tr><th>id</th><th>vec</th></tr>"
 
-    var x_y = "(" + this.x + ", " + this.y + ")" + n
-    var vel = "Vel: (" + this.velocity.x + ", " + this.velocity.y + ")" + n
-    var forces = ""
-    for (const force of this.forces) {
-      forces += "Force: (" + force.x + ", " + force.y + ")" + n
+    table += "<tr>"
+    table += "</tr>"
+
+    for (let [id, vec] of this.vectors) {
+      table += "<tr>"
+      table += "<td>" + id + "</td>"
+      table += "<td>(" + vec.x.toFixed() + ", " + vec.y.toFixed() + ")</td>"
+      table += "</tr>"
     }
-    debug.textContent = x_y + vel + forces
+
+    debug.innerHTML = table
   }
 }
 
-class Wall extends MechanicalObject {
-  constructor(x, y, w, h) {
-    this.rectangle = new Rectangle(x, y, w, h)
-  }
-}
+const canvas = document.getElementById("canvas")
+const ctx = canvas.getContext("2d")
 
-
-const canvas = document.getElementById('canvas')
-const ctx = canvas.getContext('2d')
-
-var circle = new Circle(20, 20, 20, "green")
-var weight = new Vector(0, 0, 0, 1)
-weight.scale(circle.mass * GRAVITY)
-circle.forces.push(weight)
+var circle = new Circle(20, 20, 20, "black")
+circle.addVec("w", 0, 0, 0, 1, "blue")
 
 const engine = new Engine(canvas, ctx)
 engine.add(circle)
 
 function addForce() {
-  circle.forces.push(new Vector(0, 0, 1, 0))
+  var p = document.getElementById("vector").value.split(",")
+  circle.addVec("add" + circle.vectors.size, p[0], p[1], p[2], p[3], "green")
 }
 
 engine.loop()
 
-document.getElementById("btn").addEventListener("click", addForce)
+document.getElementById("addForce").addEventListener("click", addForce)

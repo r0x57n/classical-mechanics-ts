@@ -4,14 +4,57 @@
       <script type="text/javascript" src="http://localhost:8080/skewer"></script>
 
       <style type="text/css">
-        canvas { border: 1px solid black; }
+        #container {
+            display: flex;
+        }
+        
+        #left { }
+
+        #right {
+            margin: 10px;
+            flex-grow: 1;
+        }
+        
+        canvas {
+            border: 1px dotted black;
+        }
+
+        #debug { }
+
+        #objectInfo {
+            float: left;
+            white-space: pre;
+            width: 20%;
+        }
+
+        #objectInfo th, td {
+            width: 80px;
+            text-align: left;
+        }
+
+        #debugButtons { }
       </style>
     </head>
   <body>
-    <h1>This is a canvas test!</h1>
-    <canvas id="canvas" width="800" height="500"></canvas>
-    <div id="debug"></div>
+    <h1><a href="https://github.com/r0x57n/classical-mechanics-js">Classical mechanics in JS</a></h1>
+    <div id="container">
+      <div id="left">
+        <canvas id="canvas" width="800" height="500"></canvas>
+      </div>
+      <div id="right">
+        <div id="debug">
+          <div id="objectInfo"></div>
+          <div id="debugButtons">
+            <form>
+              <label for="vector">vec</label><br>
+              <input type="text" id="vector" value="0,0,1,0"><br><br>
+              <button type="button" id="addForce">Add force</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script type="module" src="main.js"></script>
-    <button id="btn">Force</button>
   </body>
 </html>
