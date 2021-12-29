@@ -1,11 +1,13 @@
-import { Vector, Point } from "./linear_algebra.js"
+import { Vector } from "./linear_algebra.js"
 
 const GRAVITY = 9.82
 const Y_HAT = new Vector(0, 0, 0, 1)
 const X_HAT = new Vector(0, 0, 1, 0)
 
 class VecD extends Vector {
-  constructor(p1x, p1y, p2x, p2y, color="purple") {
+  color: string
+
+  constructor(p1x: number, p1y: number, p2x: number, p2y: number, color="purple") {
     super(p1x, p1y, p2x, p2y)
     this.color = color
   }
@@ -19,7 +21,7 @@ class VecD extends Vector {
    * scale  - what scale to draw it in
    * color  - what color to draw it in
    */
-  draw(ctx, x, y, scale=1) {
+  draw(ctx: CanvasRenderingContext2D, x: number, y: number, scale=1) {
     ctx.beginPath()
     ctx.strokeStyle = this.color
     ctx.moveTo(x, y)
@@ -30,13 +32,17 @@ class VecD extends Vector {
 }
 
 class MechanicalObject {
-  constructor(mass) {
+  x: number
+  y: number
+  mass: number
+  vectors = new Map<string, VecD>()
+
+  constructor(mass: number) {
     this.mass = mass
-    this.vectors = new Map()
     this.addVec("vel", 0.0, 0.0, 0.0, 0.0, "blue")
   }
 
-  addVec(id, p1x, p1y, p2x, p2y, color="purple") {
+  addVec(id: string, p1x: number, p1y: number, p2x: number, p2y: number, color="purple") {
     var vector = new VecD(p1x, p1y, p2x, p2y, color)
 
     if (id == "w") {
@@ -46,7 +52,7 @@ class MechanicalObject {
     this.vectors.set(id, vector)
   }
 
-  physics(deltaTime, ctx) {
+  physics(deltaTime: number, ctx: CanvasRenderingContext2D) {
     // get total forces
     var yTotN = 0
     var xTotN = 0
@@ -71,17 +77,17 @@ class MechanicalObject {
     acc.draw(ctx, this.x, this.y, 5)
 
     // handle velocity
-    var vel = this.vectors.get("vel")
-    vel.add(acc)
-    vel.draw(ctx, this.x, this.y, 0.1)
+    var velocity = this.vectors.get("vel")
+    velocity.add(acc)
+    velocity.draw(ctx, this.x, this.y, 0.1)
 
-    var projectedX = vel.proj(X_HAT)
-    var projectedY = vel.proj(Y_HAT)
+    var projectedX = velocity.proj(X_HAT)
+    var projectedY = velocity.proj(Y_HAT)
 
-    this.x += ( projectedX.sign() * Math.round(projectedX.abs()) ) * deltaTime
-    this.y += ( projectedY.sign() * Math.round(projectedY.abs()) ) * deltaTime
+    this.x += ( Math.round(projectedX.abs()) ) * deltaTime
+    this.y += ( Math.round(projectedY.abs()) ) * deltaTime
 
-    this.vectors.set("vel", vel)
+    this.vectors.set("vel", velocity)
   }
 }
 

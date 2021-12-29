@@ -1,4 +1,9 @@
 class Engine {
+  ctx: any
+  canvas: any
+  elements = []
+  deltaTime: number
+
   constructor (canvas, ctx) {
     this.canvas = canvas
     this.ctx = ctx
@@ -6,12 +11,12 @@ class Engine {
     this.deltaTime = 120 / 10000
   }
 
-  add(element) {
+  add(element: object) {
     this.elements.push(element)
   }
 
   update() {
-    this.ctx.clearRect(0, 0, canvas.width, canvas.height)
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
     for (const element of this.elements) {
       if (element.y >= this.canvas.height || element.y <= 0) {
